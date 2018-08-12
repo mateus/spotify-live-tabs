@@ -28,9 +28,10 @@ app.get("/tab", (req, res) => {
       },
       (error, tabs) => {
         if (error) {
-          console.error(error);
+          console.log(req.query.title, error.message);
           res.send(error);
         } else {
+          console.log(req.query.title, "SUCCESS");
           res.send(tabs);
         }
       }
