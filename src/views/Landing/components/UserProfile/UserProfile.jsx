@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, DisplayText, TextStyle, Stack } from "@shopify/polaris";
+import { Button, DisplayText, TextStyle, Stack } from "@shopify/polaris";
 
 import "./UserProfile.css";
 

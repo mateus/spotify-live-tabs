@@ -18,6 +18,7 @@ class Landing extends Component {
     currenctlyPlayingData: null,
     tabs: null,
     tabURL: null,
+    lyricsURL: null,
     query: null
   };
 
@@ -88,12 +89,34 @@ class Landing extends Component {
       .catch(error => console.warn(error));
   }
 
+  fetchLyrics(name, artist) {
+    const url = new URL(window.location.origin + "/lyrics");
+    url.searchParams.append("name", name);
+    url.searchParams.append("artist", artist);
+
+    return fetch(url)
+      .then(response => response.json())
+      .then(lyricsData =>
+        this.setState({
+          lyricsURL: lyricsData.message.body.lyrics.backlink_url
+        })
+      )
+      .catch(error => console.warn(error));
+  }
+
   updateTabURL(url) {
     this.setState({ tabURL: url });
   }
 
   render() {
-    const { userData, currenctlyPlayingData, tabs, tabURL, query } = this.state;
+    const {
+      userData,
+      currenctlyPlayingData,
+      tabs,
+      tabURL,
+      lyricsURL,
+      query
+    } = this.state;
 
     const userProfile = userData ? (
       <UserProfile
@@ -113,6 +136,7 @@ class Landing extends Component {
       const tabQuery = `${playingNow.artists[0].name} - ${playingNow.name}`;
 
       if (query !== tabQuery) {
+        this.fetchLyrics(playingNow.name, playingNow.artists[0].name);
         this.fetchTabs(tabQuery).then(tabsData => {
           this.setState({
             tabs: tabsData,
@@ -144,13 +168,15 @@ class Landing extends Component {
       );
     }
 
-    let tabCard = null;
+    let resultCard = null;
     let tabsListCard = null;
     if (tabs) {
       if (tabs.length > 0) {
-        tabsListCard = <TabsListCard tabs={tabs} onClick={this.updateTabURL.bind(this)} />;
+        tabsListCard = (
+          <TabsListCard tabs={tabs} onClick={this.updateTabURL.bind(this)} />
+        );
 
-        tabCard = (
+        resultCard = (
           <Card>
             <iframe
               id="ugs"
@@ -181,7 +207,20 @@ class Landing extends Component {
           </Card>
         );
 
-        tabCard = (
+        resultCard = lyricsURL ? (
+          <Card>
+            <iframe
+              id="lyrics"
+              src={lyricsURL}
+              title="lyrics"
+              width="100%"
+              height="4000px"
+              frameBorder="0"
+              marginHeight="0"
+              marginWidth="0"
+            />
+          </Card>
+        ) : (
           <Card sectioned>
             <Stack distribution="center">
               <Icon source="view" color="skyDark" />
@@ -190,7 +229,7 @@ class Landing extends Component {
         );
       }
     } else {
-      tabCard = (
+      resultCard = (
         <Card sectioned>
           <SkeletonBodyText />
         </Card>
@@ -217,7 +256,7 @@ class Landing extends Component {
             </Stack>
           </Layout.Section>
           <Layout.Section>{tabsListCard}</Layout.Section>
-          <Layout.Section>{tabCard}</Layout.Section>
+          <Layout.Section>{resultCard}</Layout.Section>
         </Layout>
       </Page>
     );
