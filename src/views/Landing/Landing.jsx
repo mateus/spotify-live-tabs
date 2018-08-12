@@ -113,7 +113,7 @@ class Landing extends Component {
   }
 
   updateTabURL(url) {
-    this.setState({ tabURL: url });
+    this.setState({ tabURL: url, selectedCardTab: 0 });
   }
 
   handleTabChange(selectedTabIndex) {
@@ -283,11 +283,7 @@ class Landing extends Component {
     ];
 
     return (
-      <Page
-        title={userProfile}
-        fullWidth
-        breadcrumbs={[{ content: "Logout", url: window.location.origin }]}
-      >
+      <Page title={userProfile} fullWidth>
         <Layout>
           <Layout.Section secondary>{player}</Layout.Section>
           <Layout.Section>{tabsListCard}</Layout.Section>
