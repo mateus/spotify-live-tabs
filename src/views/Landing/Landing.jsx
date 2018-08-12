@@ -21,6 +21,7 @@ class Landing extends Component {
     tabURL: null,
     lyricsURL: null,
     query: null,
+    sideMenu: false,
     selectedCardTab: 0
   };
 
@@ -101,7 +102,6 @@ class Landing extends Component {
     const url = new URL(window.location.origin + "/lyrics");
     url.searchParams.append("name", name);
     url.searchParams.append("artist", artist);
-    ;
     return fetch(url)
       .then(response => response.json())
       .then(lyricsData =>
@@ -127,6 +127,10 @@ class Landing extends Component {
     this.setState({ selectedCardTab: selectedTabIndex });
   }
 
+  changeViewLayout() {
+    this.setState({ sideMenu: !this.state.sideMenu });
+  }
+
   render() {
     const {
       userData,
@@ -135,6 +139,7 @@ class Landing extends Component {
       tabURL,
       lyricsURL,
       query,
+      sideMenu,
       selectedCardTab
     } = this.state;
 
@@ -188,7 +193,11 @@ class Landing extends Component {
     if (tabs) {
       if (tabs.length > 0) {
         tabsListCard = (
-          <TabsListCard tabs={tabs} onClick={this.updateTabURL.bind(this)} />
+          <TabsListCard
+            tabs={tabs}
+            onClick={this.updateTabURL.bind(this)}
+            limited={!sideMenu}
+          />
         );
 
         tabCard = (
@@ -284,11 +293,29 @@ class Landing extends Component {
       }
     ];
 
+    const viewLayout = sideMenu ? (
+      <Layout.Section secondary>
+        {player}
+        {tabsListCard}
+      </Layout.Section>
+    ) : (
+      <React.Fragment>
+        <Layout.Section secondary>{player}</Layout.Section>
+        <Layout.Section>{tabsListCard}</Layout.Section>{" "}
+      </React.Fragment>
+    );
+
     return (
-      <Page title={userProfile} fullWidth>
+      <Page
+        title={userProfile}
+        primaryAction={{
+          onClick: this.changeViewLayout.bind(this),
+          icon: "view"
+        }}
+        fullWidth
+      >
         <Layout>
-          <Layout.Section secondary>{player}</Layout.Section>
-          <Layout.Section>{tabsListCard}</Layout.Section>
+          {viewLayout}
           <Layout.Section>
             <Card>
               <Tabs

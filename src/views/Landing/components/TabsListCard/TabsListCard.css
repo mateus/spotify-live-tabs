@@ -1,5 +1,8 @@
 .TabsCardList {
-  max-height: 221px;
   overflow-y: scroll;
   border-top: 1px solid #dfe3e8;
+}
+
+.TabsCardList--limited {
+  max-height: 270px;
 }

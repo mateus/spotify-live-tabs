@@ -11,7 +11,11 @@ import {
 
 import "./TabsListCard.css";
 
-export default function TabsCard({ tabs, onClick }) {
+export default function TabsCard({ tabs, onClick, limited }) {
+  const classNames = limited
+    ? "TabsCardList TabsCardList--limited"
+    : "TabsCardList";
+
   return (
     <Card>
       <Card.Section>
@@ -20,7 +24,7 @@ export default function TabsCard({ tabs, onClick }) {
           <TextStyle variation="subdued">({tabs.length} results)</TextStyle>
         </DisplayText>
       </Card.Section>
-      <div className="TabsCardList">
+      <div className={classNames}>
         <ResourceList
           resourceName={{ singular: "Tab", plural: "Tabs" }}
           items={tabs}
@@ -41,15 +45,14 @@ export default function TabsCard({ tabs, onClick }) {
                 accessibilityLabel={`Tab for ${name}`}
               >
                 <Heading>
-                  <Stack spacing="tight" alignment="baseline">
-                    <span>{name}</span>
-                    <Badge>{type}</Badge>
-                    <TextStyle variation="subdued">
-                      ★ {rating} - {numberRates} Reviews
-                    </TextStyle>
-                  </Stack>
+                  {artist} - {name}
                 </Heading>
-                <div>{artist}</div>
+                <Stack spacing="tight" alignment="baseline">
+                  <TextStyle variation="subdued">
+                    ★ {rating} - {numberRates} Reviews
+                  </TextStyle>
+                  <Badge>{type}</Badge>
+                </Stack>
               </ResourceList.Item>
             );
           }}
