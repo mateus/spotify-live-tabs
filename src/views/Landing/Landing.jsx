@@ -88,7 +88,12 @@ class Landing extends Component {
 
     return fetch(url)
       .then(response => response.json())
-      .then(tabsData => tabsData)
+      .then(tabsData =>
+        this.setState({
+          tabs: tabsData,
+          tabURL: tabsData.length > 0 ? tabsData[0].url : null
+        })
+      )
       .catch(error => console.warn(error));
   }
 
@@ -96,18 +101,20 @@ class Landing extends Component {
     const url = new URL(window.location.origin + "/lyrics");
     url.searchParams.append("name", name);
     url.searchParams.append("artist", artist);
-
+    ;
     return fetch(url)
       .then(response => response.json())
       .then(lyricsData =>
         this.setState({
-          lyricsURL: lyricsData.message.body.lyrics.backlink_url
+          lyricsURL: lyricsData.message.body.lyrics.backlink_url,
+          query: `${artist} - ${name}`
         })
       )
       .catch(error => {
         console.warn(error);
         this.setState({
-          lyricsURL: false
+          lyricsURL: false,
+          query: `${artist} - ${name}`
         });
       });
   }
@@ -146,17 +153,12 @@ class Landing extends Component {
       const progressLevel = parseFloat(
         (100 * currenctlyPlayingData.progress_ms) / playingNow.duration_ms
       ).toFixed(2);
+
       const tabQuery = `${playingNow.artists[0].name} - ${playingNow.name}`;
 
       if (query !== tabQuery) {
         this.fetchLyrics(playingNow.name, playingNow.artists[0].name);
-        this.fetchTabs(tabQuery).then(tabsData => {
-          this.setState({
-            tabs: tabsData,
-            tabURL: tabsData.length > 0 ? tabsData[0].url : null,
-            query: tabQuery
-          });
-        });
+        this.fetchTabs(tabQuery);
       }
 
       player = (

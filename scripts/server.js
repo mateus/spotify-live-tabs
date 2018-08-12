@@ -19,7 +19,7 @@ app.get("/", function(req, res) {
 });
 
 app.get("/tab", (req, res) => {
-  console.log('/tab', req.query.title);
+  console.log("/tab", req.query.title, "NEW REQUEST");
   if (req.query.title) {
     ugs.search(
       {
@@ -29,11 +29,10 @@ app.get("/tab", (req, res) => {
       },
       (error, tabs) => {
         if (error) {
-          console.log(req.query.title, error.message);
-          console.log(error.message);
+          console.log("/tab", req.query.title, "ERROR:", error.message);
           res.send(error);
         } else {
-          console.log(req.query.title, "SUCCESS");
+          console.log("/tab", req.query.title, "SUCCESS");
           res.send(tabs);
         }
       }
@@ -44,9 +43,10 @@ app.get("/tab", (req, res) => {
 });
 
 app.get("/lyrics", (req, res) => {
-  if (req.query.name && req.query.artist) {
-    console.log("/lyrics", req.query.name, req.query.artist);
+  const query = ` ${req.query.artist} - ${req.query.name}`;
+  console.log("/lyrics", query, "NEW REQUEST");
 
+  if (req.query.name && req.query.artist) {
     const url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"),
       params = {
         format: "json",
@@ -67,14 +67,15 @@ app.get("/lyrics", (req, res) => {
       .then(response => response.json())
       .then(data => {
         if (data.error) {
-          console.error("Data Error caught", data.error);
+          console.log("/lyrics", query, "ERROR:", data.error);
           res.send(data.error);
         } else {
+          console.log("/lyrics", query, "SUCCESS");
           res.send(data);
         }
       })
       .catch(error => {
-        console.error("Error caught", error);
+        console.log("/lyrics", "Error caught", error);
       });
   } else {
     res.send({ message: "No name or artist provided" });
