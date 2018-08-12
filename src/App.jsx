@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import ugs from "ultimate-guitar-scraper";
 import {
   AppProvider,
   Page,
   Card,
   Stack,
   Spinner,
-  SkeletonPage,
   SkeletonBodyText,
   Layout
 } from "@shopify/polaris";
@@ -17,7 +15,8 @@ import "./App.css";
 class App extends Component {
   state = {
     currenctlyPlayingData: null,
-    tabs: null
+    tabs: null,
+    query: null
   };
 
   componentDidMount() {
@@ -27,7 +26,7 @@ class App extends Component {
   fetchCurrenctlyPlaying() {
     const pollerTimeout = 1000;
     const token =
-      "BQDHPtWR9gZapFYgNBGXSBMcc-qKYdlDMrO3hra5_aAaxRig0LlVbEZmOvUgQzopf5zJrFrdKmpyJEJkUaIw-DHQxtMWubWDVX_Qcs_3YJLvSw8hCMYpb3jLmJMogHXqPDVG__lKG2365jzNbSNFCBZNeTj8dYr6skDcBu0xz-qnSILbyFiS-cneSoN7DTASSaELN60L0ClI-9BxCwWUaJoEt4dsMuEr9LIO4eFGrvGsRdcyew_xJno-_xalb7VOxUF3QmYfPKpH5S_e";
+      "BQCC5MpMmVKlhNbf8yIVOFv7DTOlRPIoX1ZlB_H2wLFt_MQCG8UNjicQRhc_WfWDhArEmKfCZ7eaYpIe2E-Z9DxiGr-1VeWyv9ijSB0cbqSJFtOcmT4OzBdM-6D0P9c_Gy5JGBqXrvDKIZAT1Gh6XXJFnut7ZdlykhmKIf_Y2SJP4rfxgPHkh1KLArKd5lF_xOpaQOp2qAFjaubxIn7LKjGrUjK9Kg2bS9WIRnVQWrvtvRlFlt7UbULi4YqnjLL85UGLt68Ip_Yvb348";
 
     // TODO: Write error states
     const fetchData = () => {
@@ -39,10 +38,14 @@ class App extends Component {
       })
         .then(response => response.json())
         .then(data => {
-          console.log("currenctlyPlayingData:", data);
+          console.warn("currenctlyPlayingData:", data);
           this.setState({ currenctlyPlayingData: data });
         })
-        .catch(() => clearInterval(poller));
+        .catch(error => {
+          // REFRESH TOKEN
+          console.warn(error);
+          clearInterval(poller);
+        });
     };
     fetchData();
 
@@ -50,24 +53,22 @@ class App extends Component {
   }
 
   fetchTabs(title) {
-    ugs.search(
-      {
-        query: title,
-        page: 1,
-        type: ["Tab", "Chords", "Guitar Pro"]
-      },
-      (error, tabs) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(tabs);
-        }
-      }
-    );
+    const url = new URL(window.location.origin + "/tab");
+    url.searchParams.append("title", title);
+
+    return fetch(url)
+      .then(response => response.json())
+      .then(tabsData => {
+        console.warn("tabsData", tabsData);
+
+        return tabsData;
+      })
+      .catch(error => console.warn(error));
   }
 
   render() {
-    const { currenctlyPlayingData, tabData } = this.state;
+    const { currenctlyPlayingData, tabData, query } = this.state;
+
     const tab = tabData ? tabData : <SkeletonBodyText />;
 
     let player;
@@ -76,8 +77,14 @@ class App extends Component {
       const progressLevel = parseFloat(
         (100 * currenctlyPlayingData.progress_ms) / playingNow.duration_ms
       ).toFixed(2);
+      const tabQuery = `${playingNow.artists[0].name} - ${playingNow.name}`;
 
-      // this.fetchTabs(`${artistName} - ${songName}`);
+      if (query !== tabQuery) {
+        this.fetchTabs(tabQuery).then(tabsData => {
+          this.setState({ tabs: tabsData, query: tabQuery });
+        });
+      }
+
       player = (
         <Player
           albumImage={playingNow.album.images[0].url}
