@@ -8,6 +8,7 @@ import {
   Icon,
   Page,
   Layout,
+  Tabs,
   TextStyle
 } from "@shopify/polaris";
 
@@ -19,12 +20,14 @@ class Landing extends Component {
     tabs: null,
     tabURL: null,
     lyricsURL: null,
-    query: null
+    query: null,
+    selectedCardTab: 0
   };
 
   componentDidMount() {
     this.fetchUser();
     this.fetchCurrenctlyPlaying();
+    this.setState({ selectedCardTab: this.state.tabURL ? 0 : 1 });
   }
 
   fetchUser() {
@@ -101,11 +104,20 @@ class Landing extends Component {
           lyricsURL: lyricsData.message.body.lyrics.backlink_url
         })
       )
-      .catch(error => console.warn(error));
+      .catch(error => {
+        console.warn(error);
+        this.setState({
+          lyricsURL: false
+        });
+      });
   }
 
   updateTabURL(url) {
     this.setState({ tabURL: url });
+  }
+
+  handleTabChange(selectedTabIndex) {
+    this.setState({ selectedCardTab: selectedTabIndex });
   }
 
   render() {
@@ -115,7 +127,8 @@ class Landing extends Component {
       tabs,
       tabURL,
       lyricsURL,
-      query
+      query,
+      selectedCardTab
     } = this.state;
 
     const userProfile = userData ? (
@@ -168,7 +181,7 @@ class Landing extends Component {
       );
     }
 
-    let resultCard = null;
+    let tabCard = null;
     let tabsListCard = null;
     if (tabs) {
       if (tabs.length > 0) {
@@ -176,19 +189,17 @@ class Landing extends Component {
           <TabsListCard tabs={tabs} onClick={this.updateTabURL.bind(this)} />
         );
 
-        resultCard = (
-          <Card>
-            <iframe
-              id="ugs"
-              src={tabURL}
-              title="ugs"
-              width="100%"
-              height="4000px"
-              frameBorder="0"
-              marginHeight="0"
-              marginWidth="0"
-            />
-          </Card>
+        tabCard = (
+          <iframe
+            id="ugs"
+            src={tabURL}
+            title="ugs"
+            width="100%"
+            height="4000px"
+            frameBorder="0"
+            marginHeight="0"
+            marginWidth="0"
+          />
         );
       } else {
         tabsListCard = (
@@ -207,32 +218,19 @@ class Landing extends Component {
           </Card>
         );
 
-        resultCard = lyricsURL ? (
-          <Card>
-            <iframe
-              id="lyrics"
-              src={lyricsURL}
-              title="lyrics"
-              width="100%"
-              height="4000px"
-              frameBorder="0"
-              marginHeight="0"
-              marginWidth="0"
-            />
-          </Card>
-        ) : (
-          <Card sectioned>
+        tabCard = (
+          <Card.Section>
             <Stack distribution="center">
               <Icon source="view" color="skyDark" />
             </Stack>
-          </Card>
+          </Card.Section>
         );
       }
     } else {
-      resultCard = (
-        <Card sectioned>
+      tabCard = (
+        <Card.Section>
           <SkeletonBodyText />
-        </Card>
+        </Card.Section>
       );
 
       tabsListCard = (
@@ -241,6 +239,48 @@ class Landing extends Component {
         </Card>
       );
     }
+
+    let lyricsCard = null;
+    if (lyricsURL !== null) {
+      lyricsCard = lyricsURL ? (
+        <iframe
+          id="lyrics"
+          src={lyricsURL}
+          title="lyrics"
+          width="100%"
+          height="4000px"
+          frameBorder="0"
+          marginHeight="0"
+          marginWidth="0"
+        />
+      ) : (
+        <Card.Section>
+          <Stack distribution="center">
+            <Icon source="view" color="skyDark" />
+          </Stack>
+        </Card.Section>
+      );
+    } else {
+      lyricsCard = (
+        <Card.Section>
+          <SkeletonBodyText />
+        </Card.Section>
+      );
+    }
+
+    const cardTabs = [
+      {
+        id: "tab-tab",
+        content: "Tab",
+        accessibilityLabel: "Tab",
+        panelID: "tab-panel"
+      },
+      {
+        id: "lyrics-tab",
+        content: "Lyrics",
+        panelID: "lyrics-panel"
+      }
+    ];
 
     return (
       <Page
@@ -256,7 +296,16 @@ class Landing extends Component {
             </Stack>
           </Layout.Section>
           <Layout.Section>{tabsListCard}</Layout.Section>
-          <Layout.Section>{resultCard}</Layout.Section>
+          <Layout.Section>
+            <Card>
+              <Tabs
+                tabs={cardTabs}
+                selected={selectedCardTab}
+                onSelect={this.handleTabChange.bind(this)}
+              />
+              {selectedCardTab === 0 ? tabCard : lyricsCard}
+            </Card>
+          </Layout.Section>
         </Layout>
       </Page>
     );
