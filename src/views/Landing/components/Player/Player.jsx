@@ -9,7 +9,7 @@ import {
   Link
 } from "@shopify/polaris";
 
-import spotifyLogo from "../../images/Spotify_Logo_Black.png";
+import spotifyLogo from "../../../../images/Spotify_Logo_Black.png";
 
 function Player({
   albumImage,

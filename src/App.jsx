@@ -16,7 +16,8 @@ class App extends Component {
     const state = generateRandomString(16);
 
     localStorage.setItem(stateKey, state);
-    const scope = "user-read-playback-state";
+    const scope =
+      "user-read-playback-state user-read-private user-read-birthdate user-read-email";
 
     let url = "https://accounts.spotify.com/authorize";
     url += "?response_type=token";
