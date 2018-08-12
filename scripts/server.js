@@ -19,7 +19,12 @@ app.get("/", function(req, res) {
 });
 
 app.get("/tab", (req, res) => {
-  console.log("/tab", req.query.title, "NEW REQUEST");
+  console.log(
+    new Date().toTimeString(),
+    "/tab",
+    req.query.title,
+    "NEW REQUEST"
+  );
   if (req.query.title) {
     ugs.search(
       {
@@ -29,10 +34,21 @@ app.get("/tab", (req, res) => {
       },
       (error, tabs) => {
         if (error) {
-          console.log("/tab", req.query.title, "ERROR:", error.message);
+          console.log(
+            new Date().toTimeString(),
+            "/tab",
+            req.query.title,
+            "ERROR:",
+            error.message
+          );
           res.send(error);
         } else {
-          console.log("/tab", req.query.title, "SUCCESS");
+          console.log(
+            new Date().toTimeString(),
+            "/tab",
+            req.query.title,
+            "SUCCESS"
+          );
           res.send(tabs);
         }
       }
@@ -43,8 +59,8 @@ app.get("/tab", (req, res) => {
 });
 
 app.get("/lyrics", (req, res) => {
-  const query = ` ${req.query.artist} - ${req.query.name}`;
-  console.log("/lyrics", query, "NEW REQUEST");
+  const query = `${req.query.artist} - ${req.query.name}`;
+  console.log(new Date().toTimeString(), "/lyrics", query, "NEW REQUEST");
 
   if (req.query.name && req.query.artist) {
     const url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"),
@@ -67,15 +83,26 @@ app.get("/lyrics", (req, res) => {
       .then(response => response.json())
       .then(data => {
         if (data.error) {
-          console.log("/lyrics", query, "ERROR:", data.error);
+          console.log(
+            new Date().toTimeString(),
+            "/lyrics",
+            query,
+            "ERROR:",
+            data.error
+          );
           res.send(data.error);
         } else {
-          console.log("/lyrics", query, "SUCCESS");
+          console.log(new Date().toTimeString(), "/lyrics", query, "SUCCESS");
           res.send(data);
         }
       })
       .catch(error => {
-        console.log("/lyrics", "Error caught", error);
+        console.log(
+          new Date().toTimeString(),
+          "/lyrics",
+          "Error caught",
+          error
+        );
       });
   } else {
     res.send({ message: "No name or artist provided" });
