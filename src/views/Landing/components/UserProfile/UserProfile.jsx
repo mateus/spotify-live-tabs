@@ -1,5 +1,11 @@
 import React from "react";
-import { Button, DisplayText, TextStyle, Stack } from "@shopify/polaris";
+import {
+  Button,
+  Caption,
+  DisplayText,
+  TextStyle,
+  Stack
+} from "@shopify/polaris";
 
 import "./UserProfile.css";
 
@@ -11,12 +17,10 @@ export default function UserProfile({ name, image, uri, email }) {
           <img className="Avatar" src={image} alt={name} />
         </Button>
         <Stack.Item fill>
-          <DisplayText size="small">
-            <TextStyle variation="strong">Logged in as</TextStyle>
-          </DisplayText>
-          <p>
+          <DisplayText size="medium">Welcome to Live Tabs</DisplayText>
+          <Caption>
             <TextStyle variation="subdued">{name ? name : email}</TextStyle>
-          </p>
+          </Caption>
         </Stack.Item>
       </Stack>
     </div>

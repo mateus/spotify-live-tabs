@@ -284,17 +284,12 @@ class Landing extends Component {
 
     return (
       <Page
-        title="Spotify Live Tabs"
+        title={userProfile}
         fullWidth
         breadcrumbs={[{ content: "Logout", url: window.location.origin }]}
       >
         <Layout>
-          <Layout.Section secondary>
-            <Stack vertical>
-              {userProfile}
-              {player}
-            </Stack>
-          </Layout.Section>
+          <Layout.Section secondary>{player}</Layout.Section>
           <Layout.Section>{tabsListCard}</Layout.Section>
           <Layout.Section>
             <Card>
