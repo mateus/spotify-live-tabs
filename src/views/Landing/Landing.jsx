@@ -83,9 +83,11 @@ class Landing extends Component {
           </Card>
         ) : (
           <Card sectioned>
-            <DisplayText size="small">
-              <TextStyle>Tab Not Found</TextStyle>
-            </DisplayText>
+            <Stack distribution="center">
+              <DisplayText size="small">
+                <TextStyle>Tab Not Found</TextStyle>
+              </DisplayText>
+            </Stack>
           </Card>
         );
     } else {
@@ -133,7 +135,7 @@ class Landing extends Component {
     }
 
     return (
-      <Page title="Spotify Live Tabs" fullWidth>
+      <Page fullWidth>
         <Layout>
           <Layout.Section secondary>{player}</Layout.Section>
           <Layout.Section>{tab}</Layout.Section>
