@@ -19,12 +19,6 @@ app.get("/", function(req, res) {
 });
 
 app.get("/tab", (req, res) => {
-  console.log(
-    new Date().toTimeString(),
-    "/tab",
-    req.query.title,
-    "NEW REQUEST"
-  );
   if (req.query.title) {
     ugs.search(
       {
@@ -37,8 +31,8 @@ app.get("/tab", (req, res) => {
           console.log(
             new Date().toTimeString(),
             "/tab",
-            req.query.title,
             "ERROR:",
+            req.query.title,
             error.message
           );
           res.send(error);
@@ -46,8 +40,8 @@ app.get("/tab", (req, res) => {
           console.log(
             new Date().toTimeString(),
             "/tab",
-            req.query.title,
-            "SUCCESS"
+            "SUCCESS",
+            req.query.title
           );
           res.send(tabs);
         }
@@ -60,7 +54,7 @@ app.get("/tab", (req, res) => {
 
 app.get("/lyrics", (req, res) => {
   const query = `${req.query.artist} - ${req.query.name}`;
-  console.log(new Date().toTimeString(), "/lyrics", query, "NEW REQUEST");
+  console.log(new Date().toTimeString(), "--- NEW REQUREST -", query);
 
   if (req.query.name && req.query.artist) {
     const url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"),
@@ -92,7 +86,7 @@ app.get("/lyrics", (req, res) => {
           );
           res.send(data.error);
         } else {
-          console.log(new Date().toTimeString(), "/lyrics", query, "SUCCESS");
+          console.log(new Date().toTimeString(), "/lyrics", "SUCCESS", query);
           res.send(data);
         }
       })
