@@ -1,4 +1,6 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 var express = require("express");
 var cors = require("cors");
@@ -48,51 +50,49 @@ app.get("/lyrics", function(req, res) {
   console.log(new Date().toTimeString(), "--- NEW REQUREST -", query);
 
   if (req.query.name && req.query.artist) {
-    (function() {
-      var url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"),
-        params = {
-          format: "json",
-          callback: "callback",
-          q_track: req.query.name,
-          q_artist: req.query.artist,
-          apikey: process.env.REACT_APP_MUSICXMATCH_KEY
-        };
-      Object.keys(params).forEach(function(key) {
-        return url.searchParams.append(key, params[key]);
-      });
+    var url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"),
+      params = {
+        format: "json",
+        callback: "callback",
+        q_track: req.query.name,
+        q_artist: req.query.artist,
+        apikey: process.env.REACT_APP_MUSICXMATCH_KEY
+      };
+    Object.keys(params).forEach(function(key) {
+      return url.searchParams.append(key, params[key]);
+    });
 
-      fetch(url, {
-        headers: {
-          Accept: "text/plain"
-        }
+    fetch(url, {
+      headers: {
+        Accept: "text/plain"
+      }
+    })
+      .then(function(response) {
+        return response.json();
       })
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          if (data.error) {
-            console.log(
-              new Date().toTimeString(),
-              "/lyrics",
-              query,
-              "ERROR:",
-              data.error
-            );
-            res.send(data.error);
-          } else {
-            console.log(new Date().toTimeString(), "/lyrics", "SUCCESS", query);
-            res.send(data);
-          }
-        })
-        .catch(function(error) {
+      .then(function(data) {
+        if (data.error) {
           console.log(
             new Date().toTimeString(),
             "/lyrics",
-            "Error caught",
-            error
+            query,
+            "ERROR:",
+            data.error
           );
-        });
-    })();
+          res.send(data.error);
+        } else {
+          console.log(new Date().toTimeString(), "/lyrics", "SUCCESS", query);
+          res.send(data);
+        }
+      })
+      .catch(function(error) {
+        console.log(
+          new Date().toTimeString(),
+          "/lyrics",
+          "Error caught",
+          error
+        );
+      });
   } else {
     res.send({ message: "No name or artist provided" });
   }
