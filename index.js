@@ -7,7 +7,7 @@ var cors = require("cors");
 var ugs = require("ultimate-guitar-scraper");
 var fetch = require("node-fetch");
 var path = require("path");
-var URL = require("url");
+var { URL } = require("url");
 
 var app = express();
 app.use(express.static(path.join(__dirname, "client/build"))).use(cors());
