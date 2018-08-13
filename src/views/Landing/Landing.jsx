@@ -104,12 +104,13 @@ class Landing extends Component {
     url.searchParams.append("artist", artist);
     return fetch(url)
       .then(response => response.json())
-      .then(lyricsData =>
+      .then(lyricsData => {
+        const dataBody = lyricsData.message.body;
         this.setState({
-          lyricsURL: lyricsData.message.body.lyrics.backlink_url,
+          lyricsURL: dataBody.length > 0 ? dataBody.lyrics.backlink_url : false,
           query: `${artist} - ${name}`
-        })
-      )
+        });
+      })
       .catch(error => {
         console.warn(error);
         this.setState({
