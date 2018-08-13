@@ -1,18 +1,17 @@
+const express = require("express");
+const cors = require("cors");
+const ugs = require("ultimate-guitar-scraper");
+const fetch = require("node-fetch");
+const path = require("path");
+const { URL } = require("url");
+
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-
-var express = require("express");
-var cors = require("cors");
-var ugs = require("ultimate-guitar-scraper");
-var fetch = require("node-fetch");
-var path = require("path");
-var { URL } = require("url");
-
-var app = express();
+const app = express();
 app.use(express.static(path.join(__dirname, "client/build"))).use(cors());
 
-app.get("/tab", function(req, res) {
+app.get("/tab", (req, res) => {
   if (req.query.title) {
     ugs.search(
       {
@@ -20,7 +19,7 @@ app.get("/tab", function(req, res) {
         page: 1,
         type: ["Tab", "Chords", "Guitar Pro"]
       },
-      function(error, tabs) {
+      (error, tabs) => {
         if (error) {
           console.log(
             new Date().toTimeString(),
@@ -46,32 +45,32 @@ app.get("/tab", function(req, res) {
   }
 });
 
-app.get("/lyrics", function(req, res) {
-  var query = req.query.artist + " - " + req.query.name;
+app.get("/lyrics", (req, res) => {
+  const query = `${req.query.artist} - ${req.query.name}`;
   console.log(new Date().toTimeString(), "--- NEW REQUREST -", query);
 
   if (req.query.name && req.query.artist) {
-    var url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get"),
-      params = {
-        format: "json",
-        callback: "callback",
-        q_track: req.query.name,
-        q_artist: req.query.artist,
-        apikey: process.env.REACT_APP_MUSICXMATCH_KEY
-      };
-    Object.keys(params).forEach(function(key) {
-      return url.searchParams.append(key, params[key]);
-    });
+    const url = new URL("https://api.musixmatch.com/ws/1.1/matcher.lyrics.get");
+
+    const params = {
+      format: "json",
+      callback: "callback",
+      q_track: req.query.name,
+      q_artist: req.query.artist,
+      apikey: process.env.REACT_APP_MUSICXMATCH_KEY
+    };
+
+    Object.keys(params).forEach(key =>
+      url.searchParams.append(key, params[key])
+    );
 
     fetch(url, {
       headers: {
         Accept: "text/plain"
       }
     })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
+      .then(response => response.json())
+      .then(data => {
         if (data.error) {
           console.log(
             new Date().toTimeString(),
@@ -86,7 +85,7 @@ app.get("/lyrics", function(req, res) {
           res.send(data);
         }
       })
-      .catch(function(error) {
+      .catch(error => {
         console.log(
           new Date().toTimeString(),
           "/lyrics",
@@ -99,12 +98,12 @@ app.get("/lyrics", function(req, res) {
   }
 });
 
-app.get("*", function(req, res) {
-  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(`${__dirname}/client/build/index.html`));
 });
 
-var PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, function() {
+app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });
