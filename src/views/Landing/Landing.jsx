@@ -99,23 +99,31 @@ class Landing extends Component {
   }
 
   fetchLyrics(name, artist) {
+    const query = `${artist} - ${name}`;
+
     const url = new URL(window.location.origin + "/lyrics");
     url.searchParams.append("name", name);
     url.searchParams.append("artist", artist);
+
     return fetch(url)
       .then(response => response.json())
       .then(lyricsData => {
         const dataBody = lyricsData.message.body;
+        const dataHeader = lyricsData.message.header;
+
         this.setState({
-          lyricsURL: dataBody.length > 0 ? dataBody.lyrics.backlink_url : false,
-          query: `${artist} - ${name}`
+          query,
+          lyricsURL:
+            dataBody && dataHeader.status_code !== 404
+              ? dataBody.lyrics.backlink_url
+              : false
         });
       })
       .catch(error => {
         console.warn(error);
         this.setState({
-          lyricsURL: false,
-          query: `${artist} - ${name}`
+          query,
+          lyricsURL: false
         });
       });
   }
