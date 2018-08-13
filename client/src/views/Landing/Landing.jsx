@@ -211,7 +211,7 @@ class Landing extends Component {
         );
 
         tabCard = (
-          <div class="ScrollWrapper">
+          <div className="ScrollWrapper">
             <iframe
               id="ugs"
               src={tabURL}
@@ -266,7 +266,7 @@ class Landing extends Component {
     let lyricsCard = null;
     if (lyricsURL !== null) {
       lyricsCard = lyricsURL ? (
-        <div class="ScrollWrapper">
+        <div className="ScrollWrapper">
           <iframe
             id="lyrics"
             src={lyricsURL}
