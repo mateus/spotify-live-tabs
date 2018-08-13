@@ -50,7 +50,6 @@ class Landing extends Component {
       })
       .catch(error => {
         console.error("Error caught", error);
-        window.location = window.location.origin;
       });
   }
 
@@ -65,14 +64,13 @@ class Landing extends Component {
           Authorization: "Bearer " + accessToken
         }
       })
-        .then(response => response.json())
+        .then(response => (response.status === 200 ? response.json() : false))
         .then(data => {
-          this.setState({ currenctlyPlayingData: data });
+          this.setState({ currenctlyPlayingData: data.error ? null : data });
         })
         .catch(error => {
           clearInterval(poller);
           console.error("Error caught", error);
-          window.location = window.location.origin;
         });
     };
     fetchData();
