@@ -3,9 +3,3 @@
   width: 55px;
   height: 55px;
 }
-
-@media screen and (max-width: 490px) {
-  .UserProfile {
-    margin: 0 20px;
-  }
-}

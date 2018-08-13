@@ -13,6 +13,7 @@ import {
 } from "@shopify/polaris";
 
 import { UserProfile, TabsListCard, Player } from "./components";
+import "./Landing.css";
 
 class Landing extends Component {
   state = {
@@ -210,16 +211,18 @@ class Landing extends Component {
         );
 
         tabCard = (
-          <iframe
-            id="ugs"
-            src={tabURL}
-            title="ugs"
-            width="100%"
-            height="4000px"
-            frameBorder="0"
-            marginHeight="0"
-            marginWidth="0"
-          />
+          <div class="ScrollWrapper">
+            <iframe
+              id="ugs"
+              src={tabURL}
+              title="ugs"
+              width="100%"
+              height="4000px"
+              frameBorder="0"
+              marginHeight="0"
+              marginWidth="0"
+            />
+          </div>
         );
       } else {
         tabsListCard = (
@@ -263,16 +266,18 @@ class Landing extends Component {
     let lyricsCard = null;
     if (lyricsURL !== null) {
       lyricsCard = lyricsURL ? (
-        <iframe
-          id="lyrics"
-          src={lyricsURL}
-          title="lyrics"
-          width="100%"
-          height="4000px"
-          frameBorder="0"
-          marginHeight="0"
-          marginWidth="0"
-        />
+        <div class="ScrollWrapper">
+          <iframe
+            id="lyrics"
+            src={lyricsURL}
+            title="lyrics"
+            width="100%"
+            height="4000px"
+            frameBorder="0"
+            marginHeight="0"
+            marginWidth="0"
+          />
+        </div>
       ) : (
         <Card.Section>
           <Stack distribution="center">
