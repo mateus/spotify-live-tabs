@@ -102,7 +102,7 @@ app.get("*", function(req, res) {
   res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
-var PORT = process.env.PORT || 4000;
+var PORT = process.env.PORT || 5000;
 
 app.listen(PORT, function() {
   console.log("Server running on port", PORT);

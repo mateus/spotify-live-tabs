@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:4000",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@shopify/polaris": "^2.5.0",
     "react": "^16.4.2",
