@@ -67,11 +67,7 @@ class Landing extends Component {
       })
         .then(response => response.json())
         .then(data => {
-          if (data.error) {
-            window.location = window.location.origin;
-          } else {
-            this.setState({ currenctlyPlayingData: data });
-          }
+          this.setState({ currenctlyPlayingData: data });
         })
         .catch(error => {
           clearInterval(poller);
