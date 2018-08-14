@@ -7,8 +7,13 @@ const stateKey = "spotify_auth_state";
 
 class App extends Component {
   state = {
-    accessToken: getUrlParams("access_token")
+    accessToken: getUrlParams("access_token"),
+    localStorageData: null
   };
+
+  componentDidMount() {
+    this.getLocalStorage();
+  }
 
   handleLogin() {
     const client_id = process.env.REACT_APP_CLIENT_ID;
@@ -29,11 +34,23 @@ class App extends Component {
     window.location = url;
   }
 
+  getLocalStorage() {
+    const localStorageData = localStorage.getItem("spotify-live-tabs");
+
+    if (localStorageData !== null) {
+      this.setState({ localStorageData });
+    }
+  }
+
   render() {
-    const { accessToken } = this.state;
+    const { accessToken, localStorageData } = this.state;
+    const parsedLocalStorageData = JSON.parse(localStorageData);
 
     const content = accessToken ? (
-      <Landing accessToken={accessToken} />
+      <Landing
+        accessToken={accessToken}
+        sideMenu={localStorageData && parsedLocalStorageData.sideMenu}
+      />
     ) : (
       <Login onClick={this.handleLogin} />
     );

@@ -22,14 +22,19 @@ class Landing extends Component {
     tabURL: null,
     lyricsURL: null,
     query: null,
-    sideMenu: false,
-    selectedCardTab: 0
+    sideMenu: this.props.sideMenu,
+    selectedCardTab: 1
   };
 
   componentDidMount() {
     this.fetchUser();
     this.fetchCurrenctlyPlaying();
-    this.setState({ selectedCardTab: this.state.tabURL ? 0 : 1 });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.sideMenu !== prevProps.sideMenu) {
+      this.setState({ sideMenu: this.props.sideMenu });
+    }
   }
 
   fetchUser() {
@@ -132,6 +137,9 @@ class Landing extends Component {
   }
 
   changeViewLayout() {
+    const options = { sideMenu: !this.state.sideMenu };
+
+    localStorage.setItem("spotify-live-tabs", JSON.stringify(options));
     this.setState({ sideMenu: !this.state.sideMenu });
   }
 
