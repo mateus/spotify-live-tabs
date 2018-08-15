@@ -155,11 +155,15 @@ class Landing extends Component {
       selectedCardTab
     } = this.state;
 
+    const userImage =
+      userData && userData.images.length > 0
+        ? userData.images[0].url
+        : null;
     const userProfile = userData ? (
       <UserProfile
         name={userData.display_name}
         email={userData.email}
-        image={userData.images[0].url}
+        image={userImage}
         uri={userData.uri}
       />
     ) : null;

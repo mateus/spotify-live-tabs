@@ -10,12 +10,16 @@ import {
 import "./UserProfile.css";
 
 export default function UserProfile({ name, image, uri, email }) {
+  const avatar = image ? (
+    <Button plain url={uri}>
+      <img className="Avatar" src={image} alt={name} />
+    </Button>
+  ) : null;
+
   return (
     <div className="UserProfile">
       <Stack>
-        <Button plain url={uri}>
-          <img className="Avatar" src={image} alt={name} />
-        </Button>
+        {avatar}
         <Stack.Item fill>
           <DisplayText size="medium">Welcome to Live Tabs</DisplayText>
           <Caption>
